@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Portfolio — Piyush Saini</title>
+<meta name="description" content="FT-IV Portfolio by Piyush Saini — Clean and Green Energy. Dashboard with on-click reveal of activities, add-project form, and clear explanations. Theme: Light/Dark."/>
+<style>
+  /* ---------- THEMES (CSS variables) ---------- */
+  :root{
+    /* Light (default) */
+    --bg:#f6f8fb;            /* app background */
+    --panel:#ffffff;         /* sidebar & cards */
+    --card:#ffffff;
+    --text:#0f172a;          /* primary text */
+    --muted:#475569;         /* secondary text */
+    --border:#d2d8e1;        /* borders */
+    --accent:#16a34a;        /* green */
+    --accent-2:#1f9d55;
+    --link:#0ea5e9;
+    --shadow:0 8px 24px rgba(15,23,42,0.08);
+
+    /* Diagram vars (themeable) */
+    --svg-box:#e9eef6;
+    --svg-stroke:#98a6b8;
+    --svg-text:#0f172a;
+    --svg-lane:#c7d1df;
+    --svg-arrow:#0ea5e9;
+
+    --btn-panel:#f1f5f9;
+    --btn-text:#0f172a;
+    --btn-border:#cbd5e1;
+
+    --danger:#ef4444;
+  }
+  [data-theme="dark"]{
+    --bg:#0f172a;
+    --panel:#0d1324;
+    --card:#142036;
+    --text:#e5e7eb;
+    --muted:#94a3b8;
+    --border:#334155;
+    --accent:#22c55e;
+    --accent-2:#86efac;
+    --link:#38bdf8;
+    --shadow:0 10px 30px rgba(0,0,0,.25);
+
+    --svg-box:#122035;
+    --svg-stroke:#335072;
+    --svg-text:#e5e7eb;
+    --svg-lane:#334155;
+    --svg-arrow:#7dd3fc;
+
+    --btn-panel:#101826;
+    --btn-text:#e5e7eb;
+    --btn-border:#334155;
+  }
+
+  /* ---------- BASE LAYOUT ---------- */
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html,body{height:100%}
+  body{
+    margin:0;display:grid;grid-template-columns:300px 1fr;
+    background:var(--bg);color:var(--text);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.55;
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  aside{
+    background:var(--panel);
+    border-right:1px solid var(--border);
+    padding:22px 16px;position:sticky;top:0;height:100vh;overflow:auto;
+    box-shadow:var(--shadow);
+  }
+  .brand{display:grid;gap:6px;margin-bottom:12px}
+  .badge{
+    display:inline-block;padding:4px 10px;border:1px solid var(--border);
+    border-radius:999px;font-size:12px;color:var(--accent-2);background:transparent
+  }
+  .brand h1{font-size:20px;margin:0}
+  .meta{margin-top:10px;font-size:13px;color:var(--muted)}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .menu-toggle{display:none;margin:10px 0 0;font-size:14px;border:1px solid var(--btn-border);
+    background:var(--btn-panel);color:var(--btn-text);padding:8px 10px;border-radius:10px;cursor:pointer}
+  nav{margin-top:16px;display:grid;gap:8px}
+  nav a, .btn{
+    display:flex;align-items:center;gap:8px;text-decoration:none;
+    color:var(--text);padding:10px 12px;border-radius:12px;
+    border:1px solid var(--btn-border);background:var(--btn-panel);cursor:pointer
+  }
+  nav a:hover, .btn:hover{filter:brightness(0.98)}
+  nav a.active{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in oklab, var(--accent) 25%, transparent) inset}
+  .pill{
+    display:inline-block;margin-right:10px;padding:4px 10px;border-radius:999px;
+    border:1px solid var(--border);font-size:12px;color:var(--muted)
+  }
+  .btn-accent{border-color:transparent;background:linear-gradient(90deg,#16a34a,#22c55e);color:#06110a}
+  .btn-icon{gap:6px}
+
+  /* Theme toggle chip */
+  .theme-chip{
+    display:flex;align-items:center;gap:8px;margin-top:10px;
+    border:1px solid var(--btn-border);background:var(--btn-panel);
+    padding:8px 10px;border-radius:12px;cursor:pointer;font-size:14px;color:var(--btn-text)
+  }
+
+  /* ---------- MAIN ---------- */
+  main{padding:26px 26px 80px;max-width:1200px;width:100%;margin:0 auto}
+  header.card,section.card{
+    background:var(--panel);border:1px solid var(--border);
+    border-radius:18px;padding:20px;margin-bottom:20px;box-shadow:var(--shadow)
+  }
+  header.card h2{margin:0 0 6px;font-size:24px}
+  header.card p{margin:6px 0 0;color:var(--muted)}
+  .lead{color:var(--muted)}
+  h3{margin:0 0 10px;font-size:20px}
+
+  .grid{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+  .diagram{
+    background:color-mix(in oklab, var(--panel) 80%, var(--bg));
+    border:1px dashed var(--border);border-radius:14px;padding:12px;display:grid;place-items:center;overflow:auto
+  }
+  .explain{
+    background:color-mix(in oklab, var(--panel) 80%, var(--bg));
+    border:1px solid var(--border);border-radius:14px;padding:14px 16px
+  }
+  .explain h4{margin:0 0 6px;font-size:16px;color:var(--text)}
+  .explain ul{margin:0 0 10px 18px}
+  .explain li{margin:4px 0}
+
+  .footer{text-align:center;color:var(--muted);margin-top:36px;font-size:13px}
+  .top-btn{
+    position:fixed;right:18px;bottom:18px;border-radius:999px;border:1px solid var(--btn-border);
+    background:var(--btn-panel);color:var(--btn-text);
+    padding:10px 12px;cursor:pointer;box-shadow:var(--shadow);display:none
+  }
+  .top-btn.show{display:block}
+  .stamp{font-size:12px;color:var(--muted);margin-top:6px}
+  :target{scroll-margin-top:14px}
+
+  /* ---------- Dashboard ---------- */
+  .dash-grid{display:grid;grid-template-columns:repeat(3,minmax(240px,1fr));gap:14px}
+  .kpi{border:1px solid var(--border);border-radius:14px;padding:14px;background:var(--panel)}
+  .cards{display:grid;grid-template-columns:repeat(3,minmax(260px,1fr));gap:14px;margin-top:10px}
+  .card-mini{border:1px solid var(--border);border-radius:14px;padding:14px;background:var(--panel);display:grid;gap:10px}
+  .tag{font-size:12px;border:1px solid var(--border);padding:2px 8px;border-radius:999px;color:var(--muted)}
+
+  /* Modal */
+  dialog{border:none;border-radius:16px;padding:0;background:transparent}
+  .modal{
+    background:var(--panel);border:1px solid var(--border);border-radius:16px;
+    min-width:min(720px,95vw);box-shadow:var(--shadow);color:var(--text)
+  }
+  .modal header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+  .modal .content{padding:16px}
+  .modal .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .field{display:grid;gap:6px;margin-bottom:10px}
+  .field textarea{min-height:90px}
+  input,textarea{
+    width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+    background:var(--btn-panel);color:var(--text)
+  }
+  label{font-size:13px;color:var(--muted)}
+  .modal footer{display:flex;gap:10px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--border)}
+  .btn-small{padding:6px 10px;border-radius:10px;border:1px solid var(--btn-border);background:var(--btn-panel);color:var(--btn-text);cursor:pointer}
+  .btn-small:hover{filter:brightness(0.98)}
+
+  /* Visibility & Responsive */
+  .hidden{display:none}
+  @media (max-width:1080px){.dash-grid{grid-template-columns:repeat(2,minmax(220px,1fr))}.cards{grid-template-columns:repeat(2,minmax(240px,1fr))}}
+  @media (max-width:980px){
+    body{grid-template-columns:1fr}
+    aside{position:static;height:auto}
+    .menu-toggle{display:inline-block}
+    nav[aria-label="Activities"].collapsed{display:none}
+    .grid{grid-template-columns:1fr}
+    main{padding:18px}
+    .dash-grid,.cards{grid-template-columns:1fr}
+    .modal .grid2{grid-template-columns:1fr}
+  }
+  @media print{
+    body{display:block;background:#fff;color:#000}
+    aside{display:none}
+    main{padding:0}
+    header.card,section.card{box-shadow:none;border:1px solid #ccc}
+    .diagram{border-color:#bbb}
+    .top-btn{display:none!important}
+    a[href^="#"]::after{content:" (" attr(href) ")";font-size:10px;color:#555}
+  }
+</style>
+</head>
+<body>
+  <aside>
+    <div class="brand">
+      <span class="badge">• Portfolio</span>
+      <h1>Clean and Green Energy</h1>
+      <div class="meta" role="contentinfo">
+        <div><strong>Name:</strong> Piyush Saini</div>
+        <div><strong>Reg. No.:</strong> RA2311026010105</div>
+        <div><strong>Course:</strong> Clean and Green Energy</div>
+        <div class="stamp">Last updated: <span id="lastUpdated">—</span></div>
+      </div>
+    </div>
+
+    <button class="menu-toggle" aria-expanded="false" aria-controls="menu">☰ Menu</button>
+
+    <nav id="menu" aria-label="Activities" class="collapsed" style="margin-top:12px">
+      <!-- Dynamic links here -->
+    </nav>
+
+    <div class="row" style="margin-top:12px">
+      <button class="btn btn-accent btn-icon" id="openAddSide">＋ Add Activity</button>
+      <button class="theme-chip" id="themeToggle" title="Toggle theme">🌞 Light</button>
+    </div>
+
+    <div class="meta" style="margin-top:18px">
+      <span class="pill">Clarity</span>
+      <span class="pill">Neatness</span>
+      <span class="pill">Originality</span>
+      <span class="pill">Diagrams</span>
+    </div>
+  </aside>
+
+  <main>
+    <!-- DASHBOARD (default visible) -->
+    <section id="dashboard" class="card" aria-labelledby="dash-title">
+      <h2 id="dash-title">Dashboard</h2>
+      <p class="lead">Click an activity to open it (only one shows at a time). Use <b>＋ Add Activity</b> to add more projects — they’ll appear here and in the left menu.</p>
+
+      <div class="dash-grid" id="kpis"></div>
+
+      <div class="row" style="margin:10px 0 6px">
+        <button class="btn btn-accent" id="openAddDash">＋ Add Activity</button>
+      </div>
+
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <!-- ACTIVITIES (rendered dynamically; all hidden by default until clicked) -->
+    <div id="activities"></div>
+
+    <div class="footer">
+      © 2025 • Portfolio by Piyush Saini • Course: Clean and Green Energy • Reg No: RA2311026010105
+    </div>
+  </main>
+
+  <!-- Back to top -->
+  <button class="top-btn" id="topBtn" aria-label="Back to top">↑ Top</button>
+
+  <!-- ADD ACTIVITY MODAL -->
+  <dialog id="activityModal">
+    <form method="dialog" class="modal">
+      <header>
+        <strong id="modalTitle">Add Activity</strong>
+        <button class="btn-small" value="cancel" aria-label="Close">✕</button>
+      </header>
+      <div class="content">
+        <div class="grid2">
+          <div>
+            <div class="field">
+              <label for="title">Activity title</label>
+              <input id="title" required placeholder="e.g., Tidal Power Plant for Coastal Village"/>
+            </div>
+            <div class="field">
+              <label for="workflow">Workflow steps (one per line; vertical blocks)</label>
+              <textarea id="workflow" placeholder="Resource Intake / Source
+Pre-treatment / Control
+Energy Conversion Unit
+Power Conditioning / Storage
+AC Bus / Loads"></textarea>
+            </div>
+          </div>
+          <div>
+            <div class="field">
+              <label for="source">Source of energy (bullet points)</label>
+              <textarea id="source" placeholder="• What is the energy source?&#10;• Where does it come from?"></textarea>
+            </div>
+            <div class="field">
+              <label for="conversion">Conversion process (numbered steps)</label>
+              <textarea id="conversion" placeholder="1) Input → process step&#10;2) Conversion unit → output&#10;3) Conditioning / control…"></textarea>
+            </div>
+            <div class="field">
+              <label for="output">Output / utilization (bullet points)</label>
+              <textarea id="output" placeholder="• Electricity / heat / water&#10;• What gets powered?"></textarea>
+            </div>
+            <div class="field">
+              <label for="relevance">Real-world relevance (bullet points)</label>
+              <textarea id="relevance" placeholder="• Why this matters&#10;• Benefits to users/community"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer>
+        <button class="btn" value="cancel">Cancel</button>
+        <button class="btn btn-accent" id="saveBtn" value="default">Save Activity</button>
+      </footer>
+    </form>
+  </dialog>
+
+<script>
+/* ---------- Helpers ---------- */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => [...document.querySelectorAll(sel)];
+const setStamp = () => $("#lastUpdated").textContent = new Date().toLocaleDateString();
+setStamp();
+
+/* ---------- THEME: toggle + persistence + system preference ---------- */
+const THEME_KEY = "ftiv_theme";
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme", theme);
+  const label = theme === "dark" ? "🌙 Dark" : "🌞 Light";
+  $("#themeToggle").textContent = label;
+  localStorage.setItem(THEME_KEY, theme);
+}
+(function initTheme(){
+  const saved = localStorage.getItem(THEME_KEY);
+  if(saved){ applyTheme(saved); }
+  else {
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(prefersDark ? "dark" : "light");
+  }
+})();
+$("#themeToggle").addEventListener("click", ()=>{
+  const curr = document.documentElement.getAttribute("data-theme");
+  applyTheme(curr === "dark" ? "light" : "dark");
+});
+
+/* ---------- Data: 3 preloaded activities (UPDATED WORKFLOWS) ---------- */
+/* new key so your browser loads these new defaults even if you opened older code */
+const KEY = "ftiv_portfolio_activities_v3";
+
+function loadActivities(){
+  const raw = localStorage.getItem(KEY);
+  if(raw){ try { return JSON.parse(raw); } catch{} }
+  const seed = [
+    {
+      id:"a1", title:"Biogas + Wind for Rural Health Clinic",
+      workflow:[
+        "Parallel A — Biogas: Feedstock Collection (kitchen waste, agri residue, toilets)",
+        "Parallel A — Biogas: Anaerobic Digester (biogas generation)",
+        "Parallel A — Biogas: Gas Cleaning (H₂S scrubber + moisture trap)",
+        "Parallel A — Biogas: Gas Holder + Pressure Regulation",
+        "Parallel A — Biogas: Biogas Genset (AC)",
+        "Parallel B — Wind: Wind Turbine (5–20 kW class)",
+        "Parallel B — Wind: Charge Controller / Rectifier (to DC)",
+        "Shared: Battery Bank (buffer + surge support)",
+        "Shared: Inverter (DC→AC; grid-forming)",
+        "Smart Controller: SOC & load priority + Auto start/stop of genset",
+        "Optional Fallback: Diesel via ATS (emergencies only)",
+        "Merge → AC Bus → Clinic Critical Loads (lighting, vaccine fridge, autoclave, comms)"
+      ],
+      points:{
+        source:[
+          "Biogas from organics: kitchen waste, agri residue, latrine-linked digesters.",
+          "Wind via small/medium turbine (≈5–20 kW) complementing night/seasonal resource."
+        ],
+        conversion:[
+          "Feedstock → oxygen-free digestion → methane-rich biogas.",
+          "Scrubber removes H₂S & moisture → protects engine and extends life.",
+          "Biogas engine–generator makes AC; wind power is conditioned via controller.",
+          "Battery buffers intermittency; inverter stabilizes voltage/frequency.",
+          "Smart controller prioritizes medical loads and starts/stops genset based on SOC & demand.",
+          "ATS enables rare emergency diesel fallback."
+        ],
+        output:[
+          "24/7 reliable AC supply with surge handling for medical equipment.",
+          "Supports lighting, cold chain, sterilization, communication/telemedicine."
+        ],
+        relevance:[
+          "Cuts diesel cost/emissions and converts waste to value.",
+          "Improves healthcare quality via dependable power; builds local O&M skills."
+        ]
+      }
+    },
+    {
+      id:"a2", title:"Microgrid: Solar PV + Wind + Biomass",
+      workflow:[
+        "Solar PV → MPPT (to DC bus)",
+        "Wind Turbine → Rectifier/Controller (to DC bus)",
+        "Common DC Bus (PV + Wind aggregated)",
+        "Battery Storage (charge/discharge management)",
+        "Bi-Directional Inverter (forms/stiffens AC microgrid)",
+        "Protection & Synchronization (breakers, relays, anti-islanding)",
+        "AC Microgrid (Critical / Priority / Deferrable loads)",
+        "Biomass Chain: Fuel Prep (drying/sizing) → Downdraft Gasifier",
+        "Biomass Chain: Gas Cleaning/Filtration (tar/particulate removal)",
+        "Biomass Genset (AC) → Synchronized to AC Microgrid (firm capacity)",
+        "EMS + Smart Meters (forecasting, dispatch, demand response, tariffs)"
+      ],
+      points:{
+        source:[
+          "Daytime solar PV; wind complements at night/seasonally.",
+          "Firm capacity from biomass (downdraft gasifier using crop residues/wood chips)."
+        ],
+        conversion:[
+          "PV and wind are conditioned to a common DC bus (MPPT / rectifier).",
+          "Battery smooths variability; bi-dir inverter forms a stable AC microgrid.",
+          "Gasifier converts solid biomass → producer gas → IC engine genset (AC).",
+          "Protection & sync ensure safe AC coupling; EMS schedules resources.",
+          "Smart meters shift deferrable loads to high-renewable windows."
+        ],
+        output:[
+          "Village-scale reliable electricity (~50–250 kW).",
+          "Tiered supply: critical (clinic/school), priority (pumps/street lights), deferrable (processing/cold rooms)."
+        ],
+        relevance:[
+          "Lowers diesel dependence and cost; improves supply resilience.",
+          "Creates local jobs (biomass logistics, O&M) and enables productive uses."
+        ]
+      }
+    },
+    {
+      id:"a3", title:"OTEC: Electricity + Freshwater",
+      workflow:[
+        "Warm Surface Seawater Intake (screening & intake pump)",
+        "Deep Cold Seawater Pipe + Pump (≈700–1000 m depth)",
+        "Evaporator (warm water heats low-boiling working fluid → vapor)",
+        "Turbine (vapor expansion → mechanical power)",
+        "Generator (mechanical → electrical power)",
+        "Condenser (cold deep seawater condenses working fluid)",
+        "Working-Fluid Pump → Evaporator (closed loop completed)",
+        "Power Conditioning (transformer/inverter/protection) → Grid/Loads",
+        "Desalination Module (e.g., membrane distillation driven by OTEC gradients)",
+        "Discharge/Return Lines (environmental mixing & compliance)",
+        "Monitoring & Control (flow, temperatures, pressures, efficiency)"
+      ],
+      points:{
+        source:[
+          "Ocean temperature gradient: warm surface ≈25–30 °C vs. cold deep ≈4–8 °C (tropical waters)."
+        ],
+        conversion:[
+          "Warm water heats a low-boiling working fluid (e.g., ammonia) in the evaporator → vapor.",
+          "Vapor spins the turbine; generator produces electricity.",
+          "Cold deep water condenses the vapor; pump recirculates working fluid.",
+          "Low ΔT requires large heat exchangers and continuous flow."
+        ],
+        output:[
+          "Steady baseload electricity (weather-independent).",
+          "Freshwater via desalination; potential mariculture using nutrient-rich deep water."
+        ],
+        relevance:[
+          "Ideal for islands/coasts with high fuel import costs and water scarcity.",
+          "Supports resilience, tourism infrastructure, and reduced carbon intensity."
+        ]
+      }
+    }
+  ];
+  saveActivities(seed);
+  return seed;
+}
+function saveActivities(arr){ localStorage.setItem(KEY, JSON.stringify(arr)); setStamp(); }
+
+let activities = loadActivities();
+
+/* ---------- Render ---------- */
+function renderSidebar(){
+  const nav = $("#menu"); nav.innerHTML = "";
+  const dash = document.createElement("a"); dash.href="#dashboard"; dash.textContent="🏠 Dashboard"; nav.appendChild(dash);
+  activities.forEach((a,i)=>{
+    const link = document.createElement("a");
+    link.href = `#${a.id}`;
+    link.textContent = `Activity ${i+1} — ${a.title}`;
+    nav.appendChild(link);
+  });
+}
+function renderDashboard(){
+  $("#kpis").innerHTML = `
+    <div class="kpi"><b>Total activities</b><div style="font-size:28px;margin-top:6px">${activities.length}</div></div>
+    <div class="kpi"><b>With diagrams</b><div style="font-size:28px;margin-top:6px">${activities.filter(a=>a.workflow?.length).length}</div></div>
+    <div class="kpi"><b>Last updated</b><div style="font-size:28px;margin-top:6px">${new Date().toLocaleString()}</div></div>
+  `;
+  const cards = $("#cards"); cards.innerHTML = "";
+  activities.forEach((a,i)=>{
+    const el = document.createElement("div");
+    el.className = "card-mini";
+    el.innerHTML = `
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:start">
+        <div>
+          <div style="font-weight:600">${i+1}. ${a.title}</div>
+          <div class="row" style="margin-top:6px">
+            <span class="tag">Blocks: ${a.workflow.length}</span>
+            <span class="tag">Click to open</span>
+          </div>
+        </div>
+        <div class="row">
+          <a class="btn-small" href="#${a.id}">Open</a>
+        </div>
+      </div>
+    `;
+    cards.appendChild(el);
+  });
+}
+function renderActivities(){
+  const container = $("#activities"); container.innerHTML="";
+  activities.forEach((a,i)=>{
+    const sec = document.createElement("section");
+    sec.className = "card hidden"; sec.id = a.id;
+    sec.setAttribute("aria-labelledby",`title-${a.id}`);
+    sec.innerHTML = `
+      <h3 id="title-${a.id}">Activity ${i+1} — ${a.title}</h3>
+      <div class="grid">
+        <div class="diagram" id="diagram-${a.id}" aria-label="Vertical workflow diagram"></div>
+        <div class="explain">
+          ${renderExplanation(a.points)}
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <a class="btn-small" href="#dashboard">← Back to Dashboard</a>
+      </div>
+    `;
+    container.appendChild(sec);
+    drawVerticalDiagram(`#diagram-${a.id}`, a.workflow);
+  });
+}
+function renderExplanation(p){
+  const esc = s => (s??"").toString().replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+  return `
+    <h4>Source of energy</h4>
+    <ul>${(p.source||[]).map(li=>`<li>${esc(li)}</li>`).join("")}</ul>
+    <h4>Conversion process (step-by-step)</h4>
+    <ol>${(p.conversion||[]).map(li=>`<li>${esc(li)}</li>`).join("")}</ol>
+    <h4>Output / utilization</h4>
+    <ul>${(p.output||[]).map(li=>`<li>${esc(li)}</li>`).join("")}</ul>
+    <h4>Real-world relevance</h4>
+    <ul>${(p.relevance||[]).map(li=>`<li>${esc(li)}</li>`).join("")}</ul>
+  `;
+}
+
+/* ---------- SVG: vertical workflow (theme-aware) ---------- */
+function drawVerticalDiagram(sel, steps=[]){
+  const host = document.querySelector(sel);
+  const h = 64, gap = 20, padX = 40, w = 560, startY = 20;
+  const totalH = startY + steps.length*(h+gap) + 10;
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS,"svg");
+  svg.setAttribute("width","100%"); svg.setAttribute("height", Math.max(320,totalH));
+  svg.setAttribute("viewBox",`0 0 640 ${Math.max(320,totalH)}`);
+
+  const defs = document.createElementNS(svgNS,"defs");
+  defs.innerHTML = `
+    <style>
+      .box{fill:var(--svg-box);stroke:var(--svg-stroke);stroke-width:2;rx:10;ry:10}
+      .txt{font:14px sans-serif;fill:var(--svg-text)}
+      .lane{stroke:var(--svg-lane);stroke-width:2;stroke-dasharray:6 6}
+      .arr{stroke:var(--svg-arrow);stroke-width:2;marker-end:url(#arr)}
+    </style>
+    <marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0,10 4,0 8" fill="var(--svg-arrow)"></polygon>
+    </marker>`;
+  svg.appendChild(defs);
+
+  const lane = document.createElementNS(svgNS,"line");
+  lane.setAttribute("x1", (w/2)); lane.setAttribute("x2", (w/2));
+  lane.setAttribute("y1", 10); lane.setAttribute("y2", Math.max(320,totalH)-10);
+  lane.setAttribute("class","lane");
+  svg.appendChild(lane);
+
+  steps.forEach((label,i)=>{
+    const y = startY + i*(h+gap);
+    const rect = document.createElementNS(svgNS,"rect");
+    rect.setAttribute("x", (w/2 - (w-2*padX)/2));
+    rect.setAttribute("y", y);
+    rect.setAttribute("width", (w-2*padX));
+    rect.setAttribute("height", h);
+    rect.setAttribute("class","box");
+    svg.appendChild(rect);
+
+    const text = document.createElementNS(svgNS,"text");
+    text.setAttribute("x", w/2); text.setAttribute("y", y + h/2 + 5);
+    text.setAttribute("text-anchor","middle"); text.setAttribute("class","txt");
+    text.textContent = label;
+    svg.appendChild(text);
+
+    if(i < steps.length-1){
+      const line = document.createElementNS(svgNS,"line");
+      line.setAttribute("x1", w/2); line.setAttribute("x2", w/2);
+      line.setAttribute("y1", y + h); line.setAttribute("y2", y + h + gap);
+      line.setAttribute("class","arr");
+      svg.appendChild(line);
+    }
+  });
+
+  host.innerHTML = ""; host.appendChild(svg);
+}
+
+/* ---------- View: only one visible ---------- */
+function setActiveLink(hash){
+  $$("#menu a").forEach(a => a.classList.toggle("active", a.getAttribute("href") === hash));
+}
+function showOnly(id){
+  $("#dashboard").classList.add("hidden");
+  $$("#activities > section").forEach(s => s.classList.add("hidden"));
+  if(id === "dashboard" || !id){
+    $("#dashboard").classList.remove("hidden");
+    setActiveLink("#dashboard");
+  }else{
+    const el = document.getElementById(id);
+    if(el){ el.classList.remove("hidden"); el.scrollIntoView({behavior:"smooth", block:"start"}); }
+    setActiveLink("#"+id);
+  }
+}
+window.addEventListener("hashchange", ()=>{
+  const id = location.hash.replace("#","");
+  showOnly(id || "dashboard");
+});
+
+/* ---------- Add Activity (modal) ---------- */
+const dlg = $("#activityModal");
+$("#openAddDash").addEventListener("click", ()=> openAdd());
+$("#openAddSide").addEventListener("click", ()=> openAdd());
+
+function openAdd(){
+  $("#modalTitle").textContent = "Add Activity";
+  $("#title").value = "";
+  $("#workflow").value = "";
+  $("#source").value = "";
+  $("#conversion").value = "";
+  $("#output").value = "";
+  $("#relevance").value = "";
+  dlg.showModal();
+}
+$("#saveBtn").addEventListener("click", (e)=>{
+  e.preventDefault();
+  const title = $("#title").value.trim();
+  if(!title){ alert("Please enter a title"); return; }
+  const wf = $("#workflow").value.split("\n").map(s=>s.trim()).filter(Boolean);
+  const toLines = t => t.split("\n").map(s=>s.replace(/^(\u2022|\-|\d+[.)])\s*/,"").trim()).filter(Boolean);
+  const obj = {
+    id: 'id-' + Math.random().toString(36).slice(2,9), title,
+    workflow: wf.length? wf : ["Source","Conversion","Conditioning","Outputs/Loads"],
+    points:{
+      source: toLines($("#source").value),
+      conversion: toLines($("#conversion").value),
+      output: toLines($("#output").value),
+      relevance: toLines($("#relevance").value)
+    }
+  };
+  activities.push(obj); saveActivities(activities);
+  dlg.close();
+  renderSidebar(); renderDashboard(); renderActivities();
+  location.hash = `#${obj.id}`;
+});
+
+/* ---------- Nav & UX ---------- */
+const toggleBtn = document.querySelector('.menu-toggle');
+const menu = document.getElementById('menu');
+toggleBtn.addEventListener('click', () => {
+  const collapsed = menu.classList.toggle('collapsed');
+  toggleBtn.setAttribute('aria-expanded', String(!collapsed));
+});
+const topBtn = $("#topBtn");
+const onScroll = () => topBtn.classList.toggle('show', window.scrollY > 400);
+window.addEventListener('scroll', onScroll, {passive:true});
+topBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+/* ---------- Init ---------- */
+function init(){
+  renderSidebar();
+  renderDashboard();
+  renderActivities();
+  showOnly((location.hash||"#dashboard").replace("#",""));
+}
+window.addEventListener('load', init);
+</script>
+</body>
+</html>
